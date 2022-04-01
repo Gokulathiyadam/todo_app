@@ -1,5 +1,6 @@
 from asyncio import tasks
 from asyncore import read, write
+from cProfile import label
 from ctypes.wintypes import SIZE
 import os
 import sys
@@ -26,10 +27,7 @@ def load_task():
     save_task = open ("data/task")
     listbox_tasks.delete(0,tkinter.END)
     for task in save_task:
-        listbox_tasks.insert(tkinter.END,task)
-    
-       
-    
+        listbox_tasks.insert(tkinter.END,task)    
 def save_task():
     
     os.remove("data/task")
@@ -43,28 +41,59 @@ def save_task():
         first_save = open("data/save_data")
         save_task.write("\n")
         first_save = open ("data/save_data","a")
+
+    os.remove("data/cmp_task")
+    with open ("data/cmp_task","w") as file:
+        pass
+    task_cmp = listbox_complete.get(0,listbox_complete.size())
+    save_task_comp = open ("data/cmp_task","a")
+    for tasks_in_task_cmp in task_cmp:
+        tasks_in_task_cmp=tasks_in_task_cmp.strip("\n")
+        save_task_comp.write(tasks_in_task_cmp)
+        first_save = open("data/save_data")
+        save_task_comp.write("\n")
+        first_save = open ("data/save_data","a")
+def complete_task ():
+
+    task_index=listbox_tasks.curselection()[0]
+    cmp=listbox_tasks.get(task_index)
+    listbox_tasks.delete(task_index)
+    listbox_complete.insert(tkinter.END,cmp)
+
+        
+   
             
 
 frame_tasks = tkinter.Frame(root)
 frame_tasks.pack()
+frame_button = tkinter.Frame(root)
+frame_button.pack()
 
-listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=50)
+listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=40)
 listbox_tasks.pack(side=tkinter.LEFT)
-
+listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=10)
+listbox_complete.pack(side=tkinter.RIGHT)
 Scrollbar_task = tkinter.Scrollbar(frame_tasks)
 Scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)
 listbox_tasks.config(yscrollcommand=Scrollbar_task.set)
 Scrollbar_task.config(command=listbox_tasks.yview)
-
-entry_task = tkinter.Entry(root,width=50)
-entry_task.pack()
-button_add_task = tkinter.Button(root,text="Add task",width=48 ,command=add_task)
-button_add_task.pack()
-button_remove_task = tkinter.Button(root,text="Remove task",width=48 ,command=remove_task)
+frame_entry = tkinter.Frame(root)
+frame_entry.pack()
+entry_task = tkinter.Entry(frame_entry,width=37)
+entry_task.pack(side=tkinter.RIGHT)
+label_entry = tkinter.Label(frame_entry,text="ENTER TASK")
+label_entry.pack(side=tkinter.LEFT)
+frame_button = tkinter.Frame(root)
+frame_button.pack()
+button_add_task = tkinter.Button(frame_button,text="Add task",width=30 ,command=add_task)
+button_add_task.pack(side=tkinter.LEFT)
+button_complete_task = tkinter.Button(frame_button,text="complele task",width=10 ,command=complete_task)
+button_complete_task.pack(side=tkinter.RIGHT)
+button_remove_task = tkinter.Button(root,text="Remove task",width=44 ,command=remove_task)
 button_remove_task.pack()
-button_load_task = tkinter.Button(root,text="load task",width=48 ,command=load_task)
+button_load_task = tkinter.Button(root,text="load task",width=44 ,command=load_task)
 button_load_task.pack()
-button_save_task = tkinter.Button(root,text="save task",width=48 ,command=save_task)
+button_save_task = tkinter.Button(root,text="save task",width=44 ,command=save_task)
 button_save_task.pack()
 root.mainloop()
 
