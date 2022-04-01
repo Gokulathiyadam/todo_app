@@ -6,8 +6,9 @@ import os
 import sys
 import tkinter
 from tkinter import *
+from tkinter.font import BOLD
 import tkinter.messagebox
-
+file_list=["x"]
 root = Tk()
 root.title("TODO app")
 def add_task():
@@ -24,21 +25,26 @@ def remove_task():
     except :
         tkinter.messagebox.showwarning(title="warning!",message="You must select a task")
 def load_task():
-    task_path = "data/"+entry_file.get()+"_task"
-    save_task = open (task_path)
+    try : 
+            task_path = "data/"+entry_file.get()+"_task"
+            save_task = open (task_path)
+    except :
+        tkinter.messagebox.showwarning(title="warning!",message="Select a file to load")
     listbox_tasks.delete(0,tkinter.END)
     for task in save_task:
         listbox_tasks.insert(tkinter.END,task)  
-
-
     com_path = "data/"+entry_file.get()+"_cmp_task"
     save_task_com = open (com_path)
     listbox_complete.delete(0,tkinter.END)
     for task_com in save_task_com:
         listbox_complete.insert(tkinter.END,task_com)  
 def save_task():
-    task_path = "data/"+entry_file.get()+"_task"
-    os.remove(task_path)
+    try :
+        task_path = "data/"+entry_file.get()+"_task"
+        os.remove(task_path)
+    except :
+        tkinter.messagebox.showwarning(title="warning!",message="select one file or create new")
+        return
     with open (task_path,"w") as file:
         pass
     task = listbox_tasks.get(0,listbox_tasks.size())
@@ -49,9 +55,12 @@ def save_task():
         first_save = open("data/save_data")
         save_task.write("\n")
         first_save = open ("data/save_data","a")
-
-    com_path = "data/"+entry_file.get()+"_cmp_task"
-    os.remove(com_path)
+    try :
+        com_path = "data/"+entry_file.get()+"_cmp_task"
+        os.remove(com_path)
+    except:
+        tkinter.messagebox.showwarning(title="warning!",message="select one file or create new")
+        return
     with open (com_path,"w") as file:
         pass
     task_cmp = listbox_complete.get(0,listbox_complete.size())
@@ -62,37 +71,64 @@ def save_task():
         first_save = open("data/save_data")
         save_task_comp.write("\n")
         first_save = open ("data/save_data","a")
+
 def complete_task ():
 
-    task_index=listbox_tasks.curselection()[0]
-    cmp=listbox_tasks.get(task_index)
-    listbox_tasks.delete(task_index)
-    listbox_complete.insert(tkinter.END,cmp)
-
+    try : 
+        task_index=listbox_tasks.curselection()[0]
+        cmp=listbox_tasks.get(task_index)
+        listbox_tasks.delete(task_index)
+        listbox_complete.insert(tkinter.END,cmp)
+    except:
+        tkinter.messagebox.showwarning(title="warning!",message="Select a task")
+    
 def create():
+    with open ("data/file_name","w") as file:
+        pass
     file_name = entry_file.get()
-    path = "data/"+file_name+"_cmp_task"
-    path_2 = "data/"+file_name+"_task"
     if file_name != "":
+
+        path = "data/"+file_name+"_cmp_task"
+        path_2 = "data/"+file_name+"_task"
+    
+    
+    if file_name != "":
+        listbox_complete.delete(0,END) 
+        listbox_tasks.delete(0,END) 
         with open (path,"w") as file:
             pass
         with open (path_2,"w") as file:
          pass
-
-
-
-        
-   
-            
-
+    else:
+        tkinter.messagebox.showwarning(title="warning!",message="Enter a file name")
+    
+def delete():
+    listbox_complete.delete(0,END) 
+    listbox_tasks.delete(0,END) 
+    file_name = entry_file.get()
+    entry_file.delete(0,tkinter.END)
+    path = "data/"+file_name+"_cmp_task"
+    path_2 = "data/"+file_name+"_task"
+    if file_name != "":
+        os.remove(path)
+        os.remove(path_2)
+    else :
+        tkinter.messagebox.showwarning(title="warning!",message="Select a file")
+           
+frame_heading = tkinter.Frame(root)
+frame_heading.pack()
+label_head = tkinter.Label(frame_heading,text="                        PRESENT TASKS",borderwidth=5)
+label_head.pack(side=tkinter.LEFT)
+label_head2 = tkinter.Label(frame_heading,text="                       COMPLETED TASKS",borderwidth=5)
+label_head2.pack(side=tkinter.RIGHT)
 frame_tasks = tkinter.Frame(root)
 frame_tasks.pack()
 frame_button = tkinter.Frame(root)
 frame_button.pack()
 
-listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=40)
+listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=30)
 listbox_tasks.pack(side=tkinter.LEFT)
-listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=10)
+listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=20)
 listbox_complete.pack(side=tkinter.RIGHT)
 Scrollbar_task = tkinter.Scrollbar(frame_tasks)
 Scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)
@@ -118,15 +154,19 @@ button_save_task = tkinter.Button(root,text="save task",width=44 ,command=save_t
 button_save_task.pack()
 
 #for file
-label_file = tkinter.Label(root,text="Enter task name")
-label_file.pack(side=tkinter.LEFT)
+
 frame_file = tkinter.Frame(root)
 frame_file.pack()
+label_file = tkinter.Label(frame_file,text="Enter task name")
+label_file.pack(side=tkinter.LEFT)
 
-entry_file = tkinter.Entry(frame_file,width=30)
+entry_file = tkinter.Entry(frame_file,width=22)
 entry_file.pack(side=tkinter.LEFT)
+button_delete_file = tkinter.Button(frame_file,text="delete",width=5 ,command=delete)
+button_delete_file.pack(side=tkinter.RIGHT)
 button_create_file = tkinter.Button(frame_file,text="create",width=5 ,command=create)
 button_create_file.pack(side=tkinter.RIGHT)
+
 root.mainloop()
 
 
