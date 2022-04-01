@@ -6,11 +6,14 @@ import os
 import sys
 import tkinter
 from tkinter import *
+from tkinter import ttk
 from tkinter.font import BOLD
 import tkinter.messagebox
+from turtle import bgcolor
 file_list=["x"]
 root = Tk()
 root.title("TODO app")
+# this function will data task to path file
 def add_task():
     task = entry_task.get()
     if task != "":
@@ -18,12 +21,16 @@ def add_task():
         entry_task.delete(0,tkinter.END)
     else:
         tkinter.messagebox.showwarning(title="warning!",message="You must enter a task")
+
+# this function will remove task to path file
 def remove_task():
     try:
         task_index=listbox_tasks.curselection()[0]
         listbox_tasks.delete(task_index)
     except :
         tkinter.messagebox.showwarning(title="warning!",message="You must select a task")
+
+# this function will load task from path file
 def load_task():
     try : 
             task_path = "data/"+entry_file.get()+"_task"
@@ -38,6 +45,7 @@ def load_task():
     listbox_complete.delete(0,tkinter.END)
     for task_com in save_task_com:
         listbox_complete.insert(tkinter.END,task_com)  
+#the function will save the tasks to selected path
 def save_task():
     try :
         task_path = "data/"+entry_file.get()+"_task"
@@ -52,9 +60,9 @@ def save_task():
     for tasks_in_task in task:
         tasks_in_task=tasks_in_task.strip("\n")
         save_task.write(tasks_in_task)
-        first_save = open("data/save_data")
+
         save_task.write("\n")
-        first_save = open ("data/save_data","a")
+
     try :
         com_path = "data/"+entry_file.get()+"_cmp_task"
         os.remove(com_path)
@@ -72,6 +80,8 @@ def save_task():
         save_task_comp.write("\n")
         first_save = open ("data/save_data","a")
 
+# this function will move task to completed path file
+
 def complete_task ():
 
     try : 
@@ -81,10 +91,11 @@ def complete_task ():
         listbox_complete.insert(tkinter.END,cmp)
     except:
         tkinter.messagebox.showwarning(title="warning!",message="Select a task")
-    
+
+# this function will create path file  
+#initially will check for fie if its not there will create file with provided name
+
 def create():
-    with open ("data/file_name","w") as file:
-        pass
     file_name = entry_file.get()
     if file_name != "":
 
@@ -101,7 +112,9 @@ def create():
          pass
     else:
         tkinter.messagebox.showwarning(title="warning!",message="Enter a file name")
-    
+
+# this function will delete data
+
 def delete():
     listbox_complete.delete(0,END) 
     listbox_tasks.delete(0,END) 
@@ -114,21 +127,26 @@ def delete():
         os.remove(path_2)
     else :
         tkinter.messagebox.showwarning(title="warning!",message="Select a file")
+
+
+
+
+# this section contains command for GUI 
            
-frame_heading = tkinter.Frame(root)
+frame_heading = tkinter.Frame(root,bg="yellow")
 frame_heading.pack()
-label_head = tkinter.Label(frame_heading,text="                        PRESENT TASKS",borderwidth=5)
+label_head = tkinter.Label(frame_heading,text="                        PRESENT TASKS",background="yellow",borderwidth=5)
 label_head.pack(side=tkinter.LEFT)
-label_head2 = tkinter.Label(frame_heading,text="                       COMPLETED TASKS",borderwidth=5)
+label_head2 = tkinter.Label(frame_heading,text="                       COMPLETED TASKS",background="yellow",borderwidth=5)
 label_head2.pack(side=tkinter.RIGHT)
-frame_tasks = tkinter.Frame(root)
+frame_tasks = tkinter.Frame(root,bg="black")
 frame_tasks.pack()
 frame_button = tkinter.Frame(root)
 frame_button.pack()
 
-listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=30)
+listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=30,background="light pink")
 listbox_tasks.pack(side=tkinter.LEFT)
-listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=20)
+listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=20,background="light green")
 listbox_complete.pack(side=tkinter.RIGHT)
 Scrollbar_task = tkinter.Scrollbar(frame_tasks)
 Scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)
@@ -136,7 +154,7 @@ listbox_tasks.config(yscrollcommand=Scrollbar_task.set)
 Scrollbar_task.config(command=listbox_tasks.yview)
 frame_entry = tkinter.Frame(root)
 frame_entry.pack()
-entry_task = tkinter.Entry(frame_entry,width=37)
+entry_task = tkinter.Entry(frame_entry,width=37,background="light blue")
 entry_task.pack(side=tkinter.RIGHT)
 label_entry = tkinter.Label(frame_entry,text="ENTER TASK")
 label_entry.pack(side=tkinter.LEFT)
@@ -160,151 +178,24 @@ frame_file.pack()
 label_file = tkinter.Label(frame_file,text="Enter task name")
 label_file.pack(side=tkinter.LEFT)
 
-entry_file = tkinter.Entry(frame_file,width=22)
+entry_file = tkinter.Entry(frame_file,width=22,bg="light blue")
 entry_file.pack(side=tkinter.LEFT)
 button_delete_file = tkinter.Button(frame_file,text="delete",width=5 ,command=delete)
 button_delete_file.pack(side=tkinter.RIGHT)
 button_create_file = tkinter.Button(frame_file,text="create",width=5 ,command=create)
 button_create_file.pack(side=tkinter.RIGHT)
 
+list_files = ""
+list_files=list_files+(entry_file.get())
+n = StringVar()
+combobox_file =ttk.Combobox(root, width = 27,textvariable=n)
+combobox_file.pack()
+combobox_file['values']=combobox_file['values']+list_files
+
+combobox_file.current()
 root.mainloop()
 
 
-
-
-
-
-
-
-# print("please enter to start:")
-
-# global compvar
-
-# global comp_ref_list ,row, modi_once
-# modi_once = 0
-
-# comp_ref_list = []
-# compvar=open("data/comp_stat")
-# for item in compvar:
-#     comp_ref_list.append(item)
-# print(comp_ref_list)
-# while True:
-#     def Todo_application(in_val):
-
-#         row =1
-#         d=in_val.split()
-#         if len(d)==0:
-#             ss=""
-#         if len(d) ==1:
-#             ss=d[0]
-
-#         if len(d) > 1:
-#             ss = d[0]
-#             row = d[1]
-
-#         if ss=="":
-#             myfile = open("data/initial_setup")
-#             for item in myfile:
-#                 print(item, end="")
-#             print("\n")
-#             print("Select an option")
-
-#             myfile.close()
-#         if ss == ("-c"):
-#             task = open("data/task")
-#             if modi_once == 0:
-#                 j = 0
-#                 for i in task:
-#                     j += 1
-#                     comp_ref_list.append("")
-
-#             task = open("data/task")
-#             j = 1
-#             for i in task:
-#                 if j == int(row):
-#                     comp_ref_list[j-1]=str("X")
-
-#                 print(j, "-", "["+comp_ref_list[j-1].strip("\n")+"]", i, end="")
-#                 j += 1
-#             print(comp_ref_list)
-#             item=0
-#             os.remove("data/comp_stat")
-#             task = open("data/task")
-#             for ite in task:
-#                     compvar = open("data/comp_stat","a")
-#                     compvar.write(comp_ref_list[item]+"\n")
-#                     item+=1
-#         if ss == ("-u"):
-#             comp_ref_list[int(int(row)-1)]=""
-#             item = 0
-#             os.remove("data/comp_stat")
-#             task = open("data/task")
-#             for ite in task:
-#                 compvar = open("data/comp_stat", "a")
-#                 compvar.write(comp_ref_list[item] + "\n")
-#                 item += 1
-#         if ss==("-l"):
-#             task = open("data/task")
-#             if modi_once==0:
-#                 j = 0
-#                 for i in task:
-#                     j += 1
-#                     comp_ref_list.append("")
-
-#             j = 0
-#             task = open("data/task")
-#             for i in task:
-#                 print(j+1 ,"-","["+str(comp_ref_list[j].strip("\n"))+"]",i, end="")
-#                 j+=1
-#             print("\n")
-#             print("Select an option or press enter to list commands")
-#             task.close()
-#         if ss==("-a"):
-#             # print("please enter the task :")
-#             new_task = row
-#             print(new_task)
-#             task = open("data/task","a")
-#             task.write((str(new_task)))
-#             task.write(("\n"))
-#             task.close()
-#             print("Select an option or press enter to list commands")
-#         if ss == ("-r"):
-#             with open("data/delete", "w") as file:
-#                 pass
-#             k=1
-#             task = open("data/task")
-
-#             for i in task:
-#                 task = open("data/task","a")
-#                 dele_task = open("data/delete", "a")
-#                 if k==int(row):
-#                     print("deleted")
-#                     k += 1
-#                 else :
-#                     dele_task.write(i)
-#                     k += 1
-#                 task.close()
-#             for item in range (int(row)-1 ,len(comp_ref_list)-1):
-
-#                 comp_ref_list[int(item)]=comp_ref_list[int(item)+1]
-
-#             print(comp_ref_list)
-
-#             dele_task = open("data/delete")
-#             task = open("data/task", "a")
-#             os.remove("data/task")
-#             with open("data/task", "w") as file:
-#                 pass
-#             for val in dele_task:
-#                 task = open("data/task","a")
-#                 task.write(str(val))
-
-#             task.close()
-#             os.remove("data/delete")
-#             print("Select an option or press enter to list commands")
-
-
-#     Todo_application(str(input()))
 
 
 
