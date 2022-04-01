@@ -2,6 +2,7 @@ from asyncio import tasks
 from asyncore import read, write
 from cProfile import label
 from ctypes.wintypes import SIZE
+
 import os
 import sys
 import tkinter
@@ -128,48 +129,49 @@ def delete():
     else :
         tkinter.messagebox.showwarning(title="warning!",message="Select a file")
 
-
-
-
 # this section contains command for GUI 
-           
-frame_heading = tkinter.Frame(root,bg="yellow")
-frame_heading.pack()
-label_head = tkinter.Label(frame_heading,text="                        PRESENT TASKS",background="yellow",borderwidth=5)
-label_head.pack(side=tkinter.LEFT)
-label_head2 = tkinter.Label(frame_heading,text="                       COMPLETED TASKS",background="yellow",borderwidth=5)
-label_head2.pack(side=tkinter.RIGHT)
-frame_tasks = tkinter.Frame(root,bg="black")
-frame_tasks.pack()
-frame_button = tkinter.Frame(root)
-frame_button.pack()
+def frams(fram_name,color):
+    fram_name = tkinter.Frame(root,bg=color)
+    fram_name.pack()
+    return fram_name
+def listbox_tasks_fun(btn_name,bg_clr,wid):
+    btn_name = tkinter.Listbox(frame_tasks, height=10,width=wid,background=bg_clr)
+    btn_name.pack(side=tkinter.LEFT)   
+    Scrollbar_task = tkinter.Scrollbar(frame_tasks)
+    Scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)  
+    btn_name.config(yscrollcommand=Scrollbar_task.set)
+    Scrollbar_task.config(command=btn_name.yview)
+    return btn_name
+def make_btn(btn_frm,but_name,btn_text,wid,cmd,position):
+    but_name = tkinter.Button(btn_frm,text=btn_text,width=wid ,command=cmd)
+    but_name.pack(side = position)
+    return but_name
 
-listbox_tasks = tkinter.Listbox(frame_tasks, height=10,width=30,background="light pink")
-listbox_tasks.pack(side=tkinter.LEFT)
-listbox_complete = tkinter.Listbox(frame_tasks, height=10,width=20,background="light green")
-listbox_complete.pack(side=tkinter.RIGHT)
-Scrollbar_task = tkinter.Scrollbar(frame_tasks)
-Scrollbar_task.pack(side=tkinter.RIGHT,fill=tkinter.Y)
-listbox_tasks.config(yscrollcommand=Scrollbar_task.set)
-Scrollbar_task.config(command=listbox_tasks.yview)
+def label_head(lbl_name,lbl_frm,lbl_text,clor,wid):
+    lbl_name = tkinter.Label(lbl_frm,text=lbl_text,background=clor,borderwidth=wid)
+    lbl_name.pack(side=RIGHT)
+    return lbl_name
+
+frame_heading = frams("frame_heading","yellow")
+label_head2 = label_head("label_head2",frame_heading,"                       COMPLETED TASKS","yellow",5)
+label_head1 = label_head("label_head",frame_heading,"                        PRESENT TASKS","yellow",5)
+frame_tasks = frams("frame_tasks","black")
+frame_button = frams("frame_button","")
+listbox_tasks = listbox_tasks_fun("listbox_tasks","light pink",30)
+listbox_complete  = listbox_tasks_fun("listbox_complete","light green",20)
 frame_entry = tkinter.Frame(root)
 frame_entry.pack()
+label_entry = label_head("label_entry",frame_entry,"ENTER TASK","white",5)
 entry_task = tkinter.Entry(frame_entry,width=37,background="light blue")
 entry_task.pack(side=tkinter.RIGHT)
-label_entry = tkinter.Label(frame_entry,text="ENTER TASK")
-label_entry.pack(side=tkinter.LEFT)
-frame_button = tkinter.Frame(root)
-frame_button.pack()
-button_add_task = tkinter.Button(frame_button,text="Add task",width=30 ,command=add_task)
-button_add_task.pack(side=tkinter.LEFT)
-button_complete_task = tkinter.Button(frame_button,text="complele task",width=10 ,command=complete_task)
-button_complete_task.pack(side=tkinter.RIGHT)
-button_remove_task = tkinter.Button(root,text="Remove task",width=44 ,command=remove_task)
-button_remove_task.pack()
-button_load_task = tkinter.Button(root,text="load task",width=44 ,command=load_task)
-button_load_task.pack()
-button_save_task = tkinter.Button(root,text="save task",width=44 ,command=save_task)
-button_save_task.pack()
+button_add_task = make_btn(frame_button,"button_add_task","Add task",30,add_task,tkinter.LEFT)
+button_complete_task = make_btn(frame_button,"button_complete_task","complele task",10,complete_task,tkinter.RIGHT)
+button_remove_task = make_btn(root,"button_remove_task","Remove task",44,remove_task,tkinter.BOTTOM)
+button_load_task = make_btn(root,"button_load_task","load task",44,load_task,tkinter.BOTTOM)
+button_save_task = make_btn(root,"button_save_task","save task",44,save_task,tkinter.BOTTOM)
+
+
+
 
 #for file
 
@@ -180,10 +182,9 @@ label_file.pack(side=tkinter.LEFT)
 
 entry_file = tkinter.Entry(frame_file,width=22,bg="light blue")
 entry_file.pack(side=tkinter.LEFT)
-button_delete_file = tkinter.Button(frame_file,text="delete",width=5 ,command=delete)
-button_delete_file.pack(side=tkinter.RIGHT)
-button_create_file = tkinter.Button(frame_file,text="create",width=5 ,command=create)
-button_create_file.pack(side=tkinter.RIGHT)
+button_delete_file = make_btn(frame_file,"button_delete_file","delete",5,delete,tkinter.RIGHT)
+button_create_file = make_btn(frame_file,"button_create_file","create",5,delete,tkinter.RIGHT)
+
 
 list_files = ""
 list_files=list_files+(entry_file.get())
