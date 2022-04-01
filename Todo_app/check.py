@@ -1,1 +1,6 @@
-a=input(print("enter"))
+from tkinter import *
+
+root = Tk()
+
+
+root.mainloop()
