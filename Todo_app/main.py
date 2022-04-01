@@ -24,17 +24,25 @@ def remove_task():
     except :
         tkinter.messagebox.showwarning(title="warning!",message="You must select a task")
 def load_task():
-    save_task = open ("data/task")
+    task_path = "data/"+entry_file.get()+"_task"
+    save_task = open (task_path)
     listbox_tasks.delete(0,tkinter.END)
     for task in save_task:
-        listbox_tasks.insert(tkinter.END,task)    
+        listbox_tasks.insert(tkinter.END,task)  
+
+
+    com_path = "data/"+entry_file.get()+"_cmp_task"
+    save_task_com = open (com_path)
+    listbox_complete.delete(0,tkinter.END)
+    for task_com in save_task_com:
+        listbox_complete.insert(tkinter.END,task_com)  
 def save_task():
-    
-    os.remove("data/task")
-    with open ("data/task","w") as file:
+    task_path = "data/"+entry_file.get()+"_task"
+    os.remove(task_path)
+    with open (task_path,"w") as file:
         pass
     task = listbox_tasks.get(0,listbox_tasks.size())
-    save_task = open ("data/task","a")
+    save_task = open (task_path,"a")
     for tasks_in_task in task:
         tasks_in_task=tasks_in_task.strip("\n")
         save_task.write(tasks_in_task)
@@ -42,11 +50,12 @@ def save_task():
         save_task.write("\n")
         first_save = open ("data/save_data","a")
 
-    os.remove("data/cmp_task")
-    with open ("data/cmp_task","w") as file:
+    com_path = "data/"+entry_file.get()+"_cmp_task"
+    os.remove(com_path)
+    with open (com_path,"w") as file:
         pass
     task_cmp = listbox_complete.get(0,listbox_complete.size())
-    save_task_comp = open ("data/cmp_task","a")
+    save_task_comp = open (com_path,"a")
     for tasks_in_task_cmp in task_cmp:
         tasks_in_task_cmp=tasks_in_task_cmp.strip("\n")
         save_task_comp.write(tasks_in_task_cmp)
@@ -59,6 +68,18 @@ def complete_task ():
     cmp=listbox_tasks.get(task_index)
     listbox_tasks.delete(task_index)
     listbox_complete.insert(tkinter.END,cmp)
+
+def create():
+    file_name = entry_file.get()
+    path = "data/"+file_name+"_cmp_task"
+    path_2 = "data/"+file_name+"_task"
+    if file_name != "":
+        with open (path,"w") as file:
+            pass
+        with open (path_2,"w") as file:
+         pass
+
+
 
         
    
@@ -95,6 +116,17 @@ button_load_task = tkinter.Button(root,text="load task",width=44 ,command=load_t
 button_load_task.pack()
 button_save_task = tkinter.Button(root,text="save task",width=44 ,command=save_task)
 button_save_task.pack()
+
+#for file
+label_file = tkinter.Label(root,text="Enter task name")
+label_file.pack(side=tkinter.LEFT)
+frame_file = tkinter.Frame(root)
+frame_file.pack()
+
+entry_file = tkinter.Entry(frame_file,width=30)
+entry_file.pack(side=tkinter.LEFT)
+button_create_file = tkinter.Button(frame_file,text="create",width=5 ,command=create)
+button_create_file.pack(side=tkinter.RIGHT)
 root.mainloop()
 
 
