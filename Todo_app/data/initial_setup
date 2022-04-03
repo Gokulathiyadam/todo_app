@@ -1,8 +1,12 @@
 Command Line Todo application
 =============================
 Command line arguments:
-    -l   Lists all the tasks
-    -a   Adds a new task (format= -a value)
-    -r   Removes an task (format= -a value)
-    -c   Completes an task (format= -a value)
-    -u   For undo completes task (format= -a value)
+    -la  Lists all the tasks
+    -l   List Undone task   
+    -a   Adds a new task,for multiple values use ","(-a w , r , q)
+    -r   Removes an task (format= -r value)
+    -c   Completes an task (format= -c value)
+    -u   For undo completes task (format= -u value)
+    -cu  change user or create new
+    -d   Delete user
+    -x   Exit
